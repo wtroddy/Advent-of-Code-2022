@@ -3,6 +3,7 @@
 // > java RucksackScoring ./day03/input.txt
 // > java RucksackScoring ./day03/sample_input.txt 
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import java.io.IOException;
@@ -55,11 +56,30 @@ public class RucksackScoring {
         String input_data_path = args[0];
         int priority_sum = 0;
 
+        ArrayList<String> group_rucksack = new ArrayList<String>();
+        int group_counter = 0;
+        int group_size = 3;
+
         // Read the input and loop through each line 
         for (String line : Files.readAllLines(Paths.get(input_data_path))) {
 
-            // split the string into compartments
             String rucksack = line ; 
+
+            // group rucksack calculations
+            // add the rucksacks if the group isn't complete
+            if (group_counter<group_size) {
+                group_rucksack.add(rucksack);
+                group_counter=group_counter+1;
+            } 
+
+            // if the group is complete, print the groups rucksacks and reset 
+            if(group_counter==group_size){
+                System.out.println(group_rucksack);
+                group_counter=0;
+                group_rucksack.clear();
+            }
+
+            // split the string into compartments
             int rucksack_length = rucksack.length();
             String compartment_one_string = rucksack.substring(0, rucksack_length/2);
             String compartment_two_string = rucksack.substring(rucksack_length/2);
@@ -76,6 +96,7 @@ public class RucksackScoring {
 
             // add to the priority sum 
             priority_sum = priority_sum+score;
+
 
         }
 
