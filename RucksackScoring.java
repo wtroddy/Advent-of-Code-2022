@@ -1,3 +1,8 @@
+// arg[0] == path to the input data 
+// example use:
+// > java RucksackScoring ./day03/input.txt
+// > java RucksackScoring ./day03/sample_input.txt 
+
 import java.util.HashSet;
 import java.util.Set;
 import java.io.IOException;
@@ -47,10 +52,11 @@ public class RucksackScoring {
 
     public static void main(String[] args) throws IOException {
 
+        String input_data_path = args[0];
         int priority_sum = 0;
 
         // Read the input and loop through each line 
-        for (String line : Files.readAllLines(Paths.get(args[0]))) {
+        for (String line : Files.readAllLines(Paths.get(input_data_path))) {
 
             // split the string into compartments
             String rucksack = line ; 
