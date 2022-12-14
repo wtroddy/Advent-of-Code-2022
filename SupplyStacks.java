@@ -1,3 +1,9 @@
+// arg[0] == path to the input data 
+// arg[1] == crate mover model (CrateMover9000, CrateMover9001)
+// example use:
+// > java SupplyStacks ./day05/input.txt CrateMover9000
+// > java SupplyStacks ./day05/sample_input.txt CrateMover9001
+
 import java.util.Collections;
 import java.io.IOException;
 import java.nio.file.*;
@@ -165,29 +171,7 @@ public class SupplyStacks {
         
     }
 
-    public static void main(String args[]) throws IOException {
-
-        // read the input file 
-        String input_file = args[0];
-        Path path = Paths.get(input_file);
-        String input_string = Files.readString(path); //   readAllLines(path);
-        
-        // split the input string by the empty line 
-        String[] input_string_split = input_string.split("\\n\\r\\n");
-        
-        // set the component string variables 
-        String stacks_string = input_string_split[0];
-        String moves_string = input_string_split[1];
-        
-        // get the maximum number of stacks 
-        int max_stack_count = getStackCount(stacks_string);
-
-        // parse the input stacks to a list 
-        List<List<String>> stack_list = parseStacks(stacks_string, max_stack_count);
-
-        // parse the input moves to a list 
-        List<List<Integer>> parsed_move_list = parseMoves(moves_string);
-
+    public static List<List<String>> CrateMover9000(List<List<String>> stack_list, List<List<Integer>> parsed_move_list) {
         // get the number of moves
         int num_of_moves = parsed_move_list.get(0).size();
 
@@ -218,31 +202,87 @@ public class SupplyStacks {
                 stack_list.get(to_col).add(box_to_move_str) ;
                 stack_list.get(from_col).remove(box_to_move_idx);
             }
-
         }
+
+        return(stack_list);
+    }
+
+    public static List<List<String>> CrateMover9001(List<List<String>> stack_list, List<List<Integer>> parsed_move_list) {
+        // get the number of moves
+        int num_of_moves = parsed_move_list.get(0).size();
+
+        // set vars to populate in loop 
+        int num_to_move, from_col, to_col;
+
+        // move the boxes! 
+        for(int i=0; i<num_of_moves; i++){
+            // get the current moveset 
+            num_to_move = parsed_move_list.get(0).get(i);
+            from_col = parsed_move_list.get(1).get(i)-1;
+            to_col = parsed_move_list.get(2).get(i)-1;
+
+            // box to move positions 
+            int top_box_idx = stack_list.get(from_col).size();
+            int bottom_box_idx = top_box_idx-num_to_move;
+
+            // update box stacks 
+            List<String> box_to_move_list = stack_list.get(from_col).subList(bottom_box_idx, top_box_idx) ;
+            stack_list.get(to_col).addAll(box_to_move_list) ;
+            stack_list.get(from_col).subList(bottom_box_idx, top_box_idx).clear();;
+        }
+
+        return(stack_list);
+    }
+
+
+    public static void main(String args[]) throws IOException {
+
+        // read the input file 
+        String input_file = args[0];
+        Path path = Paths.get(input_file);
+        String input_string = Files.readString(path); //   readAllLines(path);
+        
+        // Set the Crate Mover Model
+        String crate_mover_model = args[1];
+
+        // split the input string by the empty line 
+        String[] input_string_split = input_string.split("\\n\\r\\n");
+        
+        // set the component string variables 
+        String stacks_string = input_string_split[0];
+        String moves_string = input_string_split[1];
+        
+        // get the maximum number of stacks 
+        int max_stack_count = getStackCount(stacks_string);
+
+        // parse the input stacks to a list 
+        List<List<String>> stack_list = parseStacks(stacks_string, max_stack_count);
+
+        // parse the input moves to a list 
+        List<List<Integer>> parsed_move_list = parseMoves(moves_string);
+
+        // create empty moved stack list 
+        List<List<String>> moved_stack_list = new ArrayList<>();
+
+        // move the boxes!
+        if(crate_mover_model.equals("CrateMover9000")){
+            moved_stack_list = CrateMover9000(stack_list, parsed_move_list);
+        } else if (crate_mover_model.equals("CrateMover9001")){
+            moved_stack_list = CrateMover9001(stack_list, parsed_move_list);
+        }
+        
 
         // print the final stack configuration 
         System.out.println("FINAL STACK CONFIGURATION");
-        for(List<String> l : stack_list){
+        for(List<String> l : moved_stack_list){
             System.out.println(l);
         }
 
         // compile final answer 
         String top_row = new String();
 
-        for(List<String> l : stack_list){
+        for(List<String> l : moved_stack_list){
             String top_row_value = new String();
-            // if((l.size()-1)>0){
-            //     top_row_value = l.get(l.size()-1);
-            // } else {
-            //     top_row_value = "";
-            // }
-            // int value_pos = l.size();
-            // if(value_pos!=0){
-            //     value_pos = value_pos-1;
-            // }
-            // top_row_value = l.get(value_pos);
-
             if(!l.isEmpty()){
                 top_row_value = l.get(l.size()-1);
             } else {
