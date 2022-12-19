@@ -12,22 +12,38 @@ public class TuningTrouble {
 
         // looping vars
         int substr_start = 0;
-        int substr_end = 4;
+        int packet_length = 4;
+        int msg_length = 14;
         int max_length = input_str.length();
 
-        for(int i=0; i<=(max_length-substr_end); i++){
+        for(int i=0; i<=(max_length-packet_length); i++){
 
             // get the substring and unique characters in it 
-            String input_sub_str = input_str.substring(substr_start+i,substr_end+i);
-            Long num_unq_chars = input_sub_str.chars().distinct().count();
+            String start_of_packet_candidate = input_str.substring(substr_start+i,packet_length+i);
+            Long num_unq_chars = start_of_packet_candidate.chars().distinct().count();
 
             // conditionally print the solution and break the loop if all characters are unique 
-            if(num_unq_chars==4){
-                System.out.println("The start-of-packet marker is complete after: "+(i+substr_end)+" characters have been processed.");
+            if(num_unq_chars==packet_length){
+                System.out.println("The start-of-packet marker is complete after: "+(i+packet_length)+" characters have been processed.");
                 break;
             }
         
         }
+
+        for(int i=0; i<=(max_length-msg_length); i++){
+
+            // get the substring and unique characters in it 
+            String start_of_msg_candidate = input_str.substring(substr_start+i,msg_length+i);
+            Long num_unq_chars = start_of_msg_candidate.chars().distinct().count();
+
+            // conditionally print the solution and break the loop if all characters are unique 
+            if(num_unq_chars==msg_length){
+                System.out.println("The start-of-message marker is complete after: "+(i+msg_length)+" characters have been processed.");
+                break;
+            }
+        
+        }
+
 
     }
     
