@@ -228,7 +228,7 @@ public class SupplyStacks {
             // update box stacks 
             List<String> box_to_move_list = stack_list.get(from_col).subList(bottom_box_idx, top_box_idx) ;
             stack_list.get(to_col).addAll(box_to_move_list) ;
-            stack_list.get(from_col).subList(bottom_box_idx, top_box_idx).clear();;
+            stack_list.get(from_col).subList(bottom_box_idx, top_box_idx).clear();
         }
 
         return(stack_list);
